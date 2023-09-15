@@ -1,14 +1,12 @@
-# Multiple Token Container
+# Multi-token Container Data Structure
 
-This is the working area for the individual Internet-Draft, "Workload Identity Use Cases".
+This is the working area for the individual Internet-Draft, "Multi-token Container Data Structure".
 
 * [Editor's Copy](https://bspk.github.io/draft-richer-wimse-token-container/#go.draft-richer-wimse-token-container.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-richer-wimse-token-container)
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-richer-wimse-token-container)
 * [Compare Editor's Copy to Individual Draft](https://bspk.github.io/draft-richer-wimse-token-container/#go.draft-richer-wimse-token-container.diff)
 
-
-For discussion, please use the [WIMSE mailing list](https://www.ietf.org/mailman/listinfo/wimse) _[[Archives](https://mailarchive.ietf.org/arch/browse/wimse/)]_.
 
 ## Contributing
 
@@ -29,4 +27,5 @@ $ make
 
 Command line usage requires that you have the necessary software installed.  See
 [the instructions](https://github.com/martinthomson/i-d-template/blob/main/doc/SETUP.md).
+
 
