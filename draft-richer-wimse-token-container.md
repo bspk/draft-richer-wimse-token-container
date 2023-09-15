@@ -24,6 +24,7 @@ author:
     role: editor
 
 normative:
+    RFC8941:
 
 informative:
 
@@ -37,7 +38,7 @@ In many use cases, particularly in workload environments, a single access token 
 
 # Introduction
 
-In most HTTP-based protocols, there's a single item sent with the message to represent authentication and authorization - an OAuth access token, a username/password pair, or a TLS client certificate. 
+In most HTTP-based protocols, there's a single item sent with the message to represent authentication and authorization - an OAuth access token, a username/password pair, or a TLS client certificate.
 
 Within many API deployments, multiple independent services are tied together into webs of processes that work together in a concerted fashion to fulfill the incoming requests. These systems need a means for different nodes to:
 
@@ -77,7 +78,7 @@ signatures:
 
 ## Calculating the Hash
 
-In order to calculate a hash, the element needs to be canonicalized and serialized in a deterministic fashion. For the purposes of this exercise, a serialization algorithm is defined that is inspired by, but not compatible with, HTTP Structured Fields defined in [!RFC8941]. An interoperable implementation of this data structure would need to define a more robust hash base generation algorithm. For example, this algorithm defines a fixed order for properties, and does not allow for extension. Additionally, the values are not appropriately mapped to robust serializations (accounting for escaping syntax-relevant characters like double quotes, semicolons, and equal signs). All of these would need to be addressed for a full specification.
+In order to calculate a hash, the element needs to be canonicalized and serialized in a deterministic fashion. For the purposes of this exercise, a serialization algorithm is defined that is inspired by, but not compatible with, HTTP Structured Fields defined in [RFC8941]. An interoperable implementation of this data structure would need to define a more robust hash base generation algorithm. For example, this algorithm defines a fixed order for properties, and does not allow for extension. Additionally, the values are not appropriately mapped to robust serializations (accounting for escaping syntax-relevant characters like double quotes, semicolons, and equal signs). All of these would need to be addressed for a full specification.
 
 1. Start with an empty string
 1. Take the token value and represent it as an `sf-string` value (enclosed in double quotes with internal double quotes, control characters, and escape characters escaped).
@@ -119,13 +120,13 @@ The elements are tied together using the `parent` property. If an element has a 
 
 ,--------,              ,--------,
 | token1 |              | token3 |
-| tag=1  |<---------+---| tag=b  |
+| tag=1  |<---------+---+ tag=b  |
 `--------`  parents |   `--------`
     ^               v
     |          ,--------, parents ,--------,
-    |          | token2 |<--------| token4 |
+    |          | token2 |<--------+ token4 |
     |  parents |        |         `--------`
-     `---------| format |
+     `---------+ format |
                `--------`
 
 ~~~
@@ -162,7 +163,7 @@ An example implementation of this data structure is available at https://github.
 
 In this implementation, the single element structure is called a `Bucket`, and the multiple element container is called a `Crate`. Immutability is enforced from the time the hash is calculated.
 
-An example of the program's output follows, where a single crate is filled with several interrelated buckets. The serialization here is inspired by, but not compatible with, HTTP Structured Fields defined in [!RFC8941].
+An example of the program's output follows, where a single crate is filled with several interrelated buckets. The serialization here is inspired by, but not compatible with, HTTP Structured Fields defined in [RFC8941].
 
 ~~~
 CNgfrWGz8iIRndkFis9RjozfdNUKnx5drNDl_qtmVNE="876ytghj4nb2ghj23rjnfdu o2i3rj asdflk 23r"
@@ -206,11 +207,19 @@ This document has no IANA actions.
 
 --- back
 
+# Why Not HTTP-SF?
+
+HTTP Structured Fields [RFC8941] defines a set of data structures and strict serializations for those structures that would be a perfect fit for this multi-token format. The serialization is HTTP-native, not requiring any additional encoding. Furthermore, SF seems to support all of the core elements we need: dictionaries, lists, properties, strings, etc. And finally, unlike general-purpose formats like JSON or CBOR, SF does not provide infinite recursion. Lists can only be two levels deep, dictionaries can't contain other dictionaries, etc.
+
+Unfortunately, SF falls short of being able to naturally represent the data structure here in a couple key ways:
+
+- the multi element collection uses hashes as keys, but binary objects (the natural representation for hashes) cannot be keys
+- the value of the parents parameter is a list and the value of the signature parameter is a dictionary, but the values of parameters have to be bare items, not lists or dictionaries
+
+For the purpose of this draft, a new syntax was invented to be able to show the core functions required. Ultimately, a fully robust serialization will need to be specified. Ideally that would be based on SF in some way, but initial experiments in defining that were met with having to follow undesirable workarounds such as using multiple headers to convey a single data structure.
+
 # Acknowledgments
 {:numbered="false"}
 
 The author would like to thank UberEther for supporting the initial conception of this work. The author would also like to thank Pieter Kasselman, George Fletcher, and Rifaat Shekh-Yusef for feedback.
 
-# Why Not HTTP-SF?
-
-HTTP Structured Fields [!RFC8941] defines 
