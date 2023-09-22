@@ -23,6 +23,10 @@ author:
     email: ietf@justin.richer.org
     role: editor
 
+venue:
+  github: "bspk/draft-richer-wimse-token-container"
+  latest: "https://bspk.github.io/draft-richer-wimse-token-container/draft-richer-wimse-token-container.html"
+
 normative:
     RFC8941:
 
